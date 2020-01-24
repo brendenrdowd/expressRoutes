@@ -37,30 +37,32 @@ app.get('/cipher',(req,res)=>{
 
 app.get('/lotto',(req,res)=>{
   const arr = req.query.arr
+  // Validations
   if(arr.length != 6){
     return res.status(400).send('Please enter 6 numbers')
   }
-  for(let i = 0; i < arr.length; i++){
-    arr[i] = Number(arr[i])
-    if(arr[i] > 20 || arr[i] < 1 ){
+  arr.map((index) =>{
+    index = Number(index)
+    if(index > 20 || index < 1 ){
       return res.status(400).send('Please provide numbers between 1 and 20')
     }
-  }
-  arr.sort((a, b) => a - b)
+  })
+  let userNumbers = arr.sort((a, b) => a - b).toString()
+
   //randomizer function here
   let lotto = []
   for(let i = 0;i<6;i++){
     lotto.push(Math.floor(Math.random() * 20))
   }
-  lotto.sort((a, b) => a - b)
-  console.log(lotto)
+  let winningNumbers = lotto.sort((a, b) => a - b).toString()
+  console.log(userNumbers,winningNumbers)
 
-  for(let i = 0; i<arr.length; i++){
-    if (arr[i] != lotto[i]){
-      return res.send("Wow! Unbelievable! You could have won the mega millions!")
-    }
+  // comparing input to lottery numbers
+  if(userNumbers == winningNumbers){
+      return res.send("Congratulations! You win $10,000,000!")
+  }else{
+    return res.send("Wow! Unbelievable! You could have won the mega millions!")
   }
-  return res.send("Congratulations! You win $10,000,000!")
 })
 
 app.listen(8080,()=>{
